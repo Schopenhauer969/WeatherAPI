@@ -1,38 +1,117 @@
-✨ Features
-Real-Time Weather Data: Displays current temperature (°C), weather conditions, humidity, and wind speed.
+# 🌤️ Weather App — JavaScript
 
-Search Functionality: Look up any city worldwide via a search button or by pressing Enter.
+A simple JavaScript weather application using the **OpenWeatherMap API**.
 
-Error Handling: Gracefully handles invalid city names or network issues.
+## Features
 
-Modern Async/Await: Clean and asynchronous JavaScript for API requests.
+* Search weather by city
+* Display city and country
+* Display temperature in Celsius
+* Display weather condition
+* Display humidity
+* Display wind speed
+* Search using the **Enter** key
+* Handle invalid city names
 
-🚀 Git Setup & GitHub Push Instructions
-To initialize this project as a Git repository and push it to GitHub, run the following commands in your terminal:
+## JavaScript
 
-Bash
-# 1. Initialize git in your project folder
-git init
+```javascript
+const API_KEY = "YOUR_API_KEY";
 
-# 2. Add all files to staging
-git add .
+const cityInput = document.getElementById("city-input");
+const searchBtn = document.getElementById("search-btn");
+const weatherCard = document.getElementById("weather-card");
+const errorMsg = document.getElementById("error");
 
-# 3. Commit your files
-git commit -m "Initial commit: Weather app using OpenWeatherMap API"
+const cityDisplay = document.getElementById("city-display");
+const tempDisplay = document.getElementById("temp-display");
+const conditionDisplay = document.getElementById("condition-display");
+const humidityDisplay = document.getElementById("humidity-display");
+const windDisplay = document.getElementById("wind-display");
 
-# 4. Rename default branch to main
-git branch -M main
+async function fetchWeather(cityName) {
+  if (!cityName) return;
 
-# 5. Link your remote repository (replace with your GitHub repo URL)
-git remote add origin [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+    cityName
+  )}&appid=${API_KEY}&units=metric`;
 
-# 6. Push your code to GitHub
-git push -u origin main
-⚙️ Configuration & Setup
-Get an API Key: Sign up at OpenWeatherMap to get your free API key.
+  try {
+    const response = await fetch(url);
 
-Add Your Key: Open your JavaScript file and replace the placeholder API key with your own:
+    if (!response.ok) {
+      throw new Error("City not found");
+    }
 
-JavaScript
-const API_KEY = "your_actual_openweathermap_api_key_here";
-Run the App: Open your index.html file in any modern web browser or use a live server extension (like Live Server in VS Code).
+    const data = await response.json();
+
+    cityDisplay.textContent = `${data.name}, ${data.sys.country}`;
+    tempDisplay.textContent = `${Math.round(data.main.temp)}°C`;
+    conditionDisplay.textContent = data.weather[0].description;
+    humidityDisplay.textContent = `${data.main.humidity}%`;
+    windDisplay.textContent = `${data.wind.speed} m/s`;
+
+    weatherCard.classList.add("active");
+    errorMsg.style.display = "none";
+  } catch (error) {
+    weatherCard.classList.remove("active");
+    errorMsg.style.display = "block";
+  }
+}
+
+searchBtn.addEventListener("click", () => {
+  fetchWeather(cityInput.value.trim());
+});
+
+cityInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    fetchWeather(cityInput.value.trim());
+  }
+});
+```
+
+## API
+
+This project uses the **OpenWeatherMap Current Weather API**.
+
+```text
+https://api.openweathermap.org/data/2.5/weather
+```
+
+### Parameters
+
+```text
+q       → City name
+appid   → OpenWeatherMap API key
+units   → metric (Celsius)
+```
+
+## Example
+
+Search:
+
+```text
+Phnom Penh
+```
+
+Result:
+
+```text
+Phnom Penh, KH
+30°C
+clear sky
+70%
+3.5 m/s
+```
+
+## Security
+
+Do not publish your real API key in a public GitHub repository.
+
+Use:
+
+```javascript
+const API_KEY = "YOUR_API_KEY";
+```
+
+instead of committing your actual key.
