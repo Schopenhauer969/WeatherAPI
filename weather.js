@@ -1,4 +1,4 @@
-// REPLACE WITH YOUR ACTUAL OPENWEATHERMAP API KEY
+
 const API_KEY = "c9efdf6ea1398b76ec079466740875cb";
 
 const cityInput = document.getElementById("city-input");
